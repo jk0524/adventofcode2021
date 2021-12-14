@@ -42,10 +42,8 @@ def solve(lst):
 	ones = defaultdict(int)
 	pairs = defaultdict(int)
 	for i in range(len(m) - 1):
-		if i == 0 or i == len(m) - 2:
-			ones[m[i]] += 1
 		pairs[m[i: i + 2]] += 1
-	print(ones, pairs)
+
 
 	for _ in range(40):
 		new_pairs = defaultdict(int)
@@ -73,10 +71,14 @@ def solve(lst):
 	for p in pairs:
 		d[p[0]] += pairs[p]
 		d[p[1]] += pairs[p]
-	for c in ones:
-		d[c] -= 1
+	
+	d[m[0]] = (d[m[0]] - 1) // 2 + 1
+	d[m[-1]] = (d[m[-1]] - 1) // 2 + 1
+	for c in d:
+		if c not in (m[0], m[-1]):
+			d[c] = d[c] // 2
 
-	return (max(d.values()) - min(d.values())) / 2
+	return (max(d.values()) - min(d.values()))
 
 cache = dict()
 
