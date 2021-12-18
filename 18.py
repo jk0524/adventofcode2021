@@ -25,47 +25,67 @@ def get_blocks(lst):
 	return blocks
 
 def solve(lst):
-	r = 0
+	result = 0
 
 	# for x in lst[0].split(',')
 	lst = [eval(x) for x in lst]
 
-	r = lst[0]
+	# r = lst[0]
 	# f = flatten(r)
 	# m = dict()
 	# n, _ = parse(r, m)
 	# # nn, s = explode(n, f, m)
 	# print(split(n))
 	# print(recreate(n))
-	for i in range(1, len(lst)):
-		l = lst[i]
-		r = [r, l]
 
-		red = True
-		while red:
-			print(r)
-			f = flatten(r)
-			m = dict()
-			n, _ = parse(r, m)
-			n, s = explode(n, f, m)
-			if s:
-				print("explode")
-				r = recreate(n)
+	# for i in range(1, len(lst)):
+	# 	l = lst[i]
+	# 	r = [r, l]
+
+	# 	red = True
+	# 	while red:
+	# 		print(r)
+	# 		f = flatten(r)
+	# 		m = dict()
+	# 		n, _ = parse(r, m)
+	# 		n, s = explode(n, f, m)
+	# 		if s:
+	# 			# print("explode")
+	# 			r = recreate(n)
+	# 			continue
+	# 		red = split(n)
+	# 		# if red:
+	# 		# 	print("split")
+	# 		r = recreate(n)
+
+	# 	# print(r)
+
+	# m = dict()
+	# print(r)
+	# n, _ = parse(r,m)
+	for i in range(len(lst)):
+		for j in range(len(lst)):
+			if i == j:
 				continue
-			red = split(n)
-			if red:
-				print("split")
-			r = recreate(n)
+			r = [lst[i], lst[j]]
+			red = True
+			while red:
+				f = flatten(r)
+				m = dict()
+				n, _ = parse(r, m)
+				n, s = explode(n, f, m)
+				if s:
+					r = recreate(n)
+					continue
+				red = split(n)
+				r = recreate(n)
 
-		print(r)
-
-	m = dict()
-	print(r)
-	n, _ = parse(r,m)
+			m = dict()
+			n, _ = parse(r,m)
+			# print(r, final_sum(n))
+			result = max(result, final_sum(n))
 	
-
-	
-	return final_sum(n)
+	return result
 
 def final_sum(root):
 	s = 0
@@ -136,6 +156,10 @@ def split(root):
 		n.right = root.left[0] // 2 + root.left[0] % 2, 0
 		root.left = n
 		return True
+	if not root.isRegLeft():
+		s = split(root.left)
+		if s:
+			return True
 
 	if root.isRegRight() and root.right[0] >= 10:
 		n = Node(root.level + 1)
@@ -143,11 +167,7 @@ def split(root):
 		n.right = root.right[0] // 2 + root.right[0] % 2, 0
 		root.right = n
 		return True
-
-	if not root.isRegLeft():
-		s = split(root.left)
-		if s:
-			return True
+	
 	if not root.isRegRight():
 		return split(root.right)
 
