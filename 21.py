@@ -77,21 +77,28 @@ def solve(lst):
 	# 	turn = 1 - turn
 	# 	cnt += 3
 
-
+	print(track)
 	# print(scores, cnt)
 	# return cnt * min(scores)
 	m = defaultdict(int) # player 1 score, player 2 score, player 1 pos, player 2 pos, turn
 	start = (0, 0, 7, 6, 0)
 	m[start] = 1
-	for p1_score in range(1, 31):
-		for p2_score in range(1, 31):
+	end = 21
+	for p2_score in range(end + 10):
+		for p1_score in range(1, end + 10):
 			for p1_pos in range(10):
 				for p2_pos in range(10):
 					for turn in [0, 1]:
-						for p1_s, p2_s, p1_p, p2_p, t, _ in neighbors(p1_score, p2_score, p1_pos, p2_pos, turn, track):
-							if (p1_s, p2_s, p1_p, p2_p, t) == (0, 0, 7, 6, 0):
-								print(p1_score, p2_score, p1_pos, p2_pos, turn)
-						m[(p1_score, p2_score, p1_pos, p2_pos, turn)] = sum([m[p1_s, p2_s, p1_p, p2_p, t] * cnt for p1_s, p2_s, p1_p, p2_p, t, cnt in neighbors(p1_score, p2_score, p1_pos, p2_pos, turn, track)])
+						total = 0
+						for p1_s, p2_s, p1_p, p2_p, t, cnt in neighbors(p1_score, p2_score, p1_pos, p2_pos, turn, track):
+							if p1_s >= end or p2_s >= end:
+								continue
+							# elif p1_s < 0 or p2_s < 0:
+							# 	continue
+							else:
+								total += cnt * m[p1_s, p2_s, p1_p, p2_p, t]
+						m[(p1_score, p2_score, p1_pos, p2_pos, turn)] = total
+						# m[(p1_score, p2_score, p1_pos, p2_pos, turn)] = sum([ * cnt for p1_s, p2_s, p1_p, p2_p, t, cnt in neighbors(p1_score, p2_score, p1_pos, p2_pos, turn, track)])
 
 
 	# print(neighbors(12, 13, 2, 3, 0, track))
@@ -120,20 +127,22 @@ def solve(lst):
 	# 		fringe.append(y)
 	# 		m[y] += m[x] * cnt
 
-	print(set(m.values()))
-	# scores = [0, 0]
-	# for p1_score, p2_score, p1_pos, p2_pos, turn in m:
-	# 	k = m[(p1_score, p2_score, p1_pos, p2_pos, turn)]
-	# 	if p1_score >= 21 and p2_score >- 21:
-	# 		continue
-	# 	if p1_score >= 21 and turn == 1:
-	# 		scores[0] += k
-	# 	if p2_score >= 21 and turn == 0:
-	# 		scores[1] += k
-	# return max(scores)
+	# print(set(m.values()))
+	scores = [0, 0]
+	for p1_score, p2_score, p1_pos, p2_pos, turn in m:
+		k = m[(p1_score, p2_score, p1_pos, p2_pos, turn)]
 
+		if p1_score >= end and p2_score >= end:
+			continue
+		if p1_score >= end:
+			if k:
+				print((p1_score, p2_score, p1_pos, p2_pos, turn), k)
+			scores[0] += k
+		if p2_score >= end:
+			scores[1] += k
+	print(scores)
 	
-	return 0
+	return max(scores)
 
 
 
